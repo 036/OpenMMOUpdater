@@ -5,13 +5,18 @@ import kotlin.reflect.KClass
 
 abstract class IdentityMapper<T> : Mapper<T>() {
 
+    /** Runs the predicate on the IdentityMapper type **/
     override fun match(jar: JarWrapper): T {
         try {
-            return options(jar).filter { predicate(it) }.single()
-        } catch (ex: Exception) {
             val matches = options(jar).filter { predicate(it) }
-
-            println("Found more than one matching class ${matches.count()}")
+            if (matches.count() > 1) {
+                println("Found ${matches.count()} matches for analyser ${this.javaClass.simpleName}")
+                matches.toList().forEach { println("${this.javaClass.simpleName} analyser matched in ${it.toString()}") }
+                throw Exception()
+            } else {
+                return matches.single()
+            }
+        } catch (ex: Exception) {
             throw ex
         }
     }
