@@ -73,3 +73,9 @@ outTmp/
 /test.output
 /kotlin-native/dist
 kotlin-ide/
+# Compiled class file
+*.class
+.classpath
+.project
+.settings/
+target/

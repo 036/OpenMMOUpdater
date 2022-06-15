@@ -1,17 +1,17 @@
 package com.openmmo.mapper
 
-import jdk.internal.org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.Type
+import org.objectweb.asm.tree.ClassNode
 import java.lang.reflect.Modifier
 
-class Class2(val jar: Jar2, val node: ClassNode) {
+class ClassWrapper(val jar: JarWrapper, val node: ClassNode) {
     val name: String get() = node.name
 
     val type: Type = Type.getObjectType(name)
 
-    val methods = node.methods.map { Method2(jar, this, it) }
+    val methods = node.methods.map { MethodWrapper(jar, this, it) }
 
-    val fields = node.fields.map { Field2(jar, this, it) }
+    val fields = node.fields.map { FieldWrapper(jar, this, it) }
 
     val access get() = node.access
 
