@@ -1,12 +1,9 @@
 package com.openmmo;
 
-import com.google.common.base.Stopwatch
 import com.openmmo.analysers.*
 import com.openmmo.mapper.*
 import org.objectweb.asm.Type
-import org.objectweb.asm.tree.ClassNode
 import java.nio.file.Paths
-import java.util.concurrent.TimeUnit
 
 class Updater {
     val pathToJar = Paths.get("C:\\Projects\\Reversing\\JVMReversing\\PokeMMO\\09062022 Update\\PokeMMO_new.jar")
@@ -21,18 +18,18 @@ class Updater {
         val pokeMMOClassAnalyser = PokeMMOClassMapper::class.java
 
         val jarMapper = JarMapper(pokeMMOClassAnalyser.`package`.name, pokeMMOClassAnalyser.classLoader)
-            .map(pathToJar, context)
-//        val mappers = jarMapper.getOrderedMappers()
+//            .map(pathToJar, context)
+        val mappers = jarMapper.getOrderedMappers()
 
         //Performs analysis against the JAR using the mappings
-//        jarMapper.startMapping(mappers, pathToJar, context)
+        jarMapper.startAnalysing(mappers, pathToJar, context)
 
 
         val idClasses = context.buildIdHierarchy()
         outputResults(idClasses)
     }
 
-    fun outputResults(identifiedClasses: List<IdClass>) {
+    private fun outputResults(identifiedClasses: List<IdClass>) {
         identifiedClasses.forEach {
             println("Found ${it.`class`} at ${it.name}")
         }

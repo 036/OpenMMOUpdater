@@ -26,7 +26,7 @@ abstract class Mapper<T> : ElementMatcher<T> {
         return context.methods.getValue(T::class)
     }
 
-    fun map(jar: JarWrapper) {
+    fun analyse(jar: JarWrapper) {
         val t: T
         try {
             t = match(jar)

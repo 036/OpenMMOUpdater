@@ -22,23 +22,6 @@ class JarMapper(vararg val classMappers: KClass<out Mapper<ClassWrapper>>) {
             .toTypedArray()
     )
 
-    /**
-     * Gets all classmappers and nested classes of classmappers
-     * Then orders the dependencies
-     */
-    fun map(jar: Path, context: Mapper.Context) {
-        val jar2 = JarWrapper(jar)
-        @Suppress("UNCHECKED_CAST")
-        val unordered = classMappers.asSequence()
-            .flatMap { it.nestedClasses.asSequence().plus(it) }
-            .filter { it.isSubclassOf(Mapper::class) }
-            .map { it as KClass<out Mapper<*>> }
-        orderDependencies(unordered).map { it.createInstance() }.forEach { mapper ->
-            //Assign mappers context
-            mapper.context = context
-            mapper.map(jar2)
-        }
-    }
 
     /** Take the class mappers and order them by dependencies **/
     fun getOrderedMappers(): Sequence<KClass<out Mapper<*>>> {
@@ -50,10 +33,14 @@ class JarMapper(vararg val classMappers: KClass<out Mapper<ClassWrapper>>) {
         return orderDependencies(unordered)
     }
 
-    fun startMapping(orderedMappers: Sequence<KClass<out Mapper<*>>>, jar: Path, context: Mapper.Context) {
+    /**
+     * Run all classes through the mappers
+     */
+    fun startAnalysing(orderedMappers: Sequence<KClass<out Mapper<*>>>, jar: Path, context: Mapper.Context) {
+        val jar2 = JarWrapper(jar)
         orderedMappers.map { it.createInstance() }.forEach { mapper ->
             mapper.context = context
-            mapper.map(JarWrapper(jar))
+            mapper.analyse(jar2)
         }
     }
 

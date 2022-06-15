@@ -9,7 +9,7 @@ import java.lang.reflect.Modifier
 class FooterPosition : IdentityMapper.Class() {
     override val predicate = predicateOf<ClassWrapper> { Modifier.isAbstract(it.access) }
         .and { !it.interfaces.any() }
-        .and { it.instanceFields.any { it.desc.contains("Array") } }
+        .and { it.instanceFields.any { field-> field.desc.contains("Array") } }
         .and { it.instanceFields.size == 3 }
         .and { it.constructors.first().arguments.size == 2}
         .and { it.constructors.first().arguments.startsWith(Type.SHORT_TYPE)}
