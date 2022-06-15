@@ -14,8 +14,4 @@ class FooterPosition : IdentityMapper.Class() {
         .and { it.constructors.first().arguments.size == 2}
         .and { it.constructors.first().arguments.startsWith(Type.SHORT_TYPE)}
         .and { it.constructors.first().arguments.endsWith(Type.SHORT_TYPE)}
-//
-//    class posX : IdentityMapper.InstanceMethod() {
-//        override val predicate = predicateOf<MethodWrapper> {  }
-//    }
 }

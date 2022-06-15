@@ -9,69 +9,44 @@ import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 
 class Updater {
+    val pathToJar = Paths.get("C:\\Projects\\Reversing\\JVMReversing\\PokeMMO\\09062022 Update\\PokeMMO_new.jar")
+    
     companion object {
-        const val DEBUG = false;
-        var analysedClasses: HashMap<String, ClassNode> = HashMap()
-        var unanalysedClasses: HashMap<String, ClassNode> = HashMap()
-    }
-
-//    var analysers: MutableList<Analyser> = mutableListOf()
-
-    fun addAnalysers() {
-//        analysers.add(GameEntryAppListenerAnalyser())
-//        analysers.add(EntityPosition())
-//        analysers.add(FooterPosition())
-//        analysers.add(MapDataAnalyser())
-//        analysers.add(ShusDebugMenuAnalyser())
-//        analysers.add(GameServerClassAnalyser())
-//        analysers.add(BreedWindowClassAnalyser())
-//        analysers.add(PokemonClassAnalyser())
-//        analysers.add(TimelineTweenBaseAnalyser())
-//        analysers.add(TimelineTweenChildAnalyser())
-    }
-
-
-    private fun runAnalysers() {
-//        println("${unanalysedClasses.values.size} PokeMMO classes found")
-//        for (classNode: ClassNode in unanalysedClasses.values) {
-//            for (analyser: Analyser in analysers) {
-//                analyser.run(classNode)
-//            }
-//        }
+        const val DEBUG = false
     }
 
     fun run() {
-//        addAnalysers()
-//        val jarFile = JarFile("C:\\Projects\\Reversing\\JVM Reversing\\PokeMMO\\09062022 Update\\PokeMMO_new.jar")
-//        unanalysedClasses = parseJar(jarFile)
-//        runAnalysers()
+        
         val context = Mapper.Context()
         val pokeMMOClassAnalyser = PokeMMOClassMapper::class.java
-        val jarMapperStopwatch = Stopwatch.createStarted()
 
-        JarMapper(pokeMMOClassAnalyser.`package`.name, pokeMMOClassAnalyser.classLoader)
-            .map(Paths.get("C:\\Projects\\Reversing\\JVMReversing\\PokeMMO\\09062022 Update\\PokeMMO_new.jar"), context)
+        val jarMapper = JarMapper(pokeMMOClassAnalyser.`package`.name, pokeMMOClassAnalyser.classLoader)
+            .map(pathToJar, context)
+//        val mappers = jarMapper.getOrderedMappers()
 
-        jarMapperStopwatch.stop()
-        println("Jar mapping took ${jarMapperStopwatch.elapsed(TimeUnit.MILLISECONDS)}ms")
-        val stopwatch = Stopwatch.createStarted();
+        //Performs analysis against the JAR using the mappings
+//        jarMapper.startMapping(mappers, pathToJar, context)
+
 
         val idClasses = context.buildIdHierarchy()
-        idClasses.forEach {
+        outputResults(idClasses)
+    }
+
+    fun outputResults(identifiedClasses: List<IdClass>) {
+        identifiedClasses.forEach {
             println("Found ${it.`class`} at ${it.name}")
         }
-        stopwatch.stop()
+
         var classes = 0
         var fields = 0
         var methods = 0
 
-        idClasses.forEach { idClass ->
+        identifiedClasses.forEach { idClass ->
             classes++
             idClass.fields.forEach { fields++ }
             idClass.methods.forEach { methods++ }
         }
-
-        println("Found ${classes} classes ${fields} fields and ${methods} methods in ${stopwatch.elapsed(TimeUnit.MILLISECONDS)}ms")
+        println("Found ${classes} classes ${fields} fields and ${methods} methods")
     }
 
 
@@ -113,9 +88,6 @@ class Updater {
             else -> classes.any { it.name == t.internalName } || try { Class.forName(t.className); true } catch (e: Exception) { false }
         }
     }
-
-
-
 }
 
 fun main() {

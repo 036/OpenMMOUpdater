@@ -39,6 +39,9 @@ class JarWrapper(val path: Path) {
         return fieldResolver.getValue(fieldId)
     }
 
+    /**
+     * Reads the JAR into ASM and maps them out to ClassNodes
+     */
     private fun readJar(source: Path, classReaderFlags: Int = 0) : Collection<ClassNode> {
         return JarFile(source.toFile()).use { jf ->
             jf.stream().iterator().asSequence()
