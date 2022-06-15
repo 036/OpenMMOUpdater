@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.isSubclassOf
 
-class JarMapper(vararg val classMappers: KClass<out Mapper<ClassWrapper>>) {
+class JarMapper(private vararg val classMappers: KClass<out Mapper<ClassWrapper>>) {
 
 
     /**
