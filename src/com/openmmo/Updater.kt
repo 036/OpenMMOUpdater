@@ -1,35 +1,43 @@
 package com.openmmo;
 
+import com.google.gson.Gson
 import com.openmmo.analysers.*
 import com.openmmo.mapper.*
 import org.objectweb.asm.Type
+import java.io.FileWriter
 import java.nio.file.Paths
 
 class Updater {
-    val pathToJar = Paths.get("C:\\Projects\\Reversing\\JVMReversing\\PokeMMO\\09062022 Update\\PokeMMO_new.jar")
-    
+    private val pathToJar = Paths.get("C:\\Projects\\Reversing\\JVMReversing\\PokeMMO\\09062022 Update\\PokeMMO_new.jar")
+    private val gson = Gson()
+    private val hooksJson = "C:\\PokeMMO\\Hooks.json"
+
     companion object {
-        const val DEBUG = false
+        const val DEBUG = true
     }
 
     fun run() {
         
         val context = Mapper.Context()
-        val pokeMMOClassAnalyser = PokeMMOClassMapper::class.java
+        val pokeMMOClassAnalyser = PokeMMOClass::class.java
 
         val jarMapper = JarMapper(pokeMMOClassAnalyser.`package`.name, pokeMMOClassAnalyser.classLoader)
-//            .map(pathToJar, context)
         val mappers = jarMapper.getOrderedMappers()
 
         //Performs analysis against the JAR using the mappings
         jarMapper.startAnalysing(mappers, pathToJar, context)
 
-
         val idClasses = context.buildIdHierarchy()
-        outputResults(idClasses)
+
+        //TODO: Fix json writing out
+        if (!DEBUG) {
+            gson.toJson(idClasses, FileWriter(hooksJson))
+        }
+
+        printResults(idClasses)
     }
 
-    private fun outputResults(identifiedClasses: List<IdClass>) {
+    private fun printResults(identifiedClasses: List<IdClass>) {
         identifiedClasses.forEach {
             println("Found ${it.`class`} at ${it.name}")
         }

@@ -10,7 +10,7 @@ abstract class IdentityMapper<T> : Mapper<T>() {
         try {
             val matches = options(jar).filter { predicate(it) }
             if (matches.count() > 1) {
-                println("Found ${matches.count()} matches for analyser ${this.javaClass.simpleName}")
+                println("[WARN] Found ${matches.count()} matches for analyser ${this.javaClass.simpleName}")
                 matches.toList().forEach { println("${this.javaClass.simpleName} analyser matched in ${it.toString()}") }
                 throw Exception()
             } else {

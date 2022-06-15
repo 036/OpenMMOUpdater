@@ -31,8 +31,8 @@ abstract class Mapper<T> : ElementMatcher<T> {
         try {
             t = match(jar)
         } catch (e: Exception ) {
-            println("Unable to find a class for ${this::class}")
-            throw e
+            println("[WARN] Unable to find a class for ${this::class}")
+            return
         }
 
         val klass = this::class

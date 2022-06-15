@@ -3,7 +3,7 @@ package com.openmmo.analysers
 import com.openmmo.mapper.*
 import java.lang.reflect.Modifier
 
-class PokeMMOClassMapper : IdentityMapper.Class() {
+class PokeMMOClass : IdentityMapper.Class() {
     override val predicate = predicateOf<ClassWrapper> { it.interfaces.isEmpty() }
         .and { Modifier.isAbstract(it.access) }
         .and { it.methods.count() > 7 }
@@ -18,6 +18,11 @@ class PokeMMOClassMapper : IdentityMapper.Class() {
 
     class inputMultiplexer : IdentityMapper.StaticField() {
         override val predicate = predicateOf<FieldWrapper> { it.desc.contains("Multiplexer") }
+    }
+
+    @DependsOn(GameClass::class)
+    class game : IdentityMapper.StaticField() {
+        override val predicate = predicateOf<FieldWrapper> { it.type == type<GameClass>() }
     }
 
     @DependsOn(BattleClass::class)
