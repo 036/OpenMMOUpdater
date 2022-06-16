@@ -1,6 +1,7 @@
 package com.openmmo;
 
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.openmmo.analysers.*
 import com.openmmo.mapper.*
 import org.objectweb.asm.Type
@@ -9,11 +10,11 @@ import java.nio.file.Paths
 
 class Updater {
     private val pathToJar = Paths.get("C:\\Projects\\Reversing\\JVMReversing\\PokeMMO\\09062022 Update\\PokeMMO_new.jar")
-    private val gson = Gson()
+    private val gson = GsonBuilder().setPrettyPrinting().create();
     private val hooksJson = "C:\\PokeMMO\\Hooks.json"
 
     companion object {
-        const val DEBUG = true
+        const val DEBUG = false
     }
 
     fun run() {
@@ -29,8 +30,8 @@ class Updater {
 
         val idClasses = context.buildIdHierarchy()
 
-        //TODO: Fix json writing out
         if (!DEBUG) {
+            println("Writing hooks to json")
             gson.toJson(idClasses, FileWriter(hooksJson))
         }
 

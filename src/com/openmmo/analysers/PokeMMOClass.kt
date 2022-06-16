@@ -1,6 +1,8 @@
 package com.openmmo.analysers
 
 import com.openmmo.mapper.*
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.Type
 import java.lang.reflect.Modifier
 
 class PokeMMOClass : IdentityMapper.Class() {
@@ -20,14 +22,38 @@ class PokeMMOClass : IdentityMapper.Class() {
         override val predicate = predicateOf<FieldWrapper> { it.desc.contains("Multiplexer") }
     }
 
-    @DependsOn(GameClass::class)
-    class game : IdentityMapper.StaticField() {
-        override val predicate = predicateOf<FieldWrapper> { it.type == type<GameClass>() }
-    }
-
     @DependsOn(BattleClass::class)
     class battle : IdentityMapper.StaticField() {
         override val predicate = predicateOf<FieldWrapper> { it.type == type<BattleClass>() }
+    }
+
+    @DependsOn(Hardware::class)
+    class hardware : IdentityMapper.StaticField() {
+        override val predicate = predicateOf<FieldWrapper> { it.klass.type == type<PokeMMOClass>() }
+            .and { it.type == type<Hardware>() }
+    }
+
+    class isAndroid: IdentityMapper.StaticMethod() {
+        override val predicate = predicateOf<MethodWrapper> { it.klass.type == type<PokeMMOClass>() }
+            .and { it.returnType == Type.BOOLEAN_TYPE }
+            .and { it.instructions.filter { it.opcode == Opcodes.GETSTATIC }.any { it.fieldName == "Android" } }
+    }
+
+    class isDesktop: IdentityMapper.StaticMethod() {
+        override val predicate = predicateOf<MethodWrapper> { it.klass.type == type<PokeMMOClass>() }
+            .and { it.returnType == Type.BOOLEAN_TYPE }
+            .and { it.instructions.filter { it.opcode == Opcodes.GETSTATIC }.any { it.fieldName == "Desktop" } }
+    }
+
+    class isIOS: IdentityMapper.StaticMethod() {
+        override val predicate = predicateOf<MethodWrapper> { it.klass.type == type<PokeMMOClass>() }
+            .and { it.returnType == Type.BOOLEAN_TYPE }
+            .and { it.instructions.filter { it.opcode == Opcodes.GETSTATIC }.any { it.fieldName == "iOS" } }
+    }
+
+    class openSupportUrl : IdentityMapper.StaticMethod() {
+        override val predicate = predicateOf<MethodWrapper> { it.klass.type == type<PokeMMOClass>() }
+            .and { it.instructions.filter { it.opcode == Opcodes.LDC }.any { it.ldcCst.equals("https://support.pokemmo.eu/auth/") } }
     }
 
 

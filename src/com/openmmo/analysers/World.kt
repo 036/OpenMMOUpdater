@@ -2,6 +2,7 @@ package com.openmmo.analysers
 
 import com.openmmo.mapper.*
 import org.objectweb.asm.Opcodes
+import org.objectweb.asm.Type
 import java.lang.reflect.Modifier
 
 class World : IdentityMapper.Class() {
@@ -10,5 +11,8 @@ class World : IdentityMapper.Class() {
             .and { it.interfaces.any{iface -> iface.className.equals("java.lang.Iterable")} }
             .and { it.interfaces.any{iface -> iface.className.equals("com.badlogic.gdx.utils.Disposable")} }
 
-
+    class getSpecificMapData() : IdentityMapper.InstanceMethod() {
+        override val predicate = predicateOf<MethodWrapper> { it.arguments.size == 3 }
+            .and { it.arguments.startsWith(Type.BYTE_TYPE, Type.BYTE_TYPE, Type.BYTE_TYPE) }
+    }
 }
