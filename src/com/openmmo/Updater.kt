@@ -1,16 +1,19 @@
 package com.openmmo;
 
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.openmmo.analysers.*
+import com.openmmo.deobfuscator.Common.writeClasses
+import com.openmmo.deobfuscator.Deobuscator
 import com.openmmo.mapper.*
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Type
 import java.io.FileWriter
 import java.nio.file.Paths
+import java.util.jar.JarFile
 
 class Updater {
     private val pathToJar = Paths.get("C:\\Projects\\Reversing\\JVMReversing\\PokeMMO\\09062022 Update\\PokeMMO_new.jar")
-    private val gson = GsonBuilder().setPrettyPrinting().create();
     private val hooksJson = "C:\\PokeMMO\\Hooks.json"
 
     companion object {
@@ -18,7 +21,12 @@ class Updater {
     }
 
     fun run() {
-        
+//        getHooks()
+//        deobfuscate()
+        Deobuscator().run(pathToJar, Paths.get("C:\\PokeMMO\\deob.jar"))
+    }
+
+    private fun getHooks() : List<IdClass> {
         val context = Mapper.Context()
         val pokeMMOClassAnalyser = PokeMMOClass::class.java
 
@@ -32,11 +40,18 @@ class Updater {
 
         if (!DEBUG) {
             println("Writing hooks to json")
-            gson.toJson(idClasses, FileWriter(hooksJson))
+            FileWriter(hooksJson).use { writer ->
+                val gson = GsonBuilder().setPrettyPrinting().create()
+                gson.toJson(idClasses, writer)
+            }
         }
 
         printResults(idClasses)
+
+        return idClasses
     }
+
+
 
     private fun printResults(identifiedClasses: List<IdClass>) {
         identifiedClasses.forEach {
@@ -54,7 +69,6 @@ class Updater {
         }
         println("Found ${classes} classes ${fields} fields and ${methods} methods")
     }
-
 
     private fun Mapper.Context.buildIdHierarchyAll(): List<IdClass> {
         val identified = buildIdHierarchy().toMutableList()
