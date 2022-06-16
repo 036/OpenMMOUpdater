@@ -2,10 +2,13 @@ package com.openmmo.analysers
 
 import com.openmmo.mapper.*
 import org.objectweb.asm.Type
+import java.lang.reflect.Modifier
 
-//@DependsOn(FooterPosition::class)
-//class ThreeDTile : IdentityMapper.Class() {
-//    override val predicate = predicateOf<ClassWrapper> { it.interfaces.any { iface -> iface.className.contains("Cloneable") } }
-//        .and { it.constructors.endsWith(Type.BYTE_TYPE) }
-//        .and {  }
-//}
+@DependsOn(FooterPosition::class)
+class ThreeDTile : IdentityMapper.Class() {
+    override val predicate = predicateOf<ClassWrapper> { it.interfaces.size == 1 }
+        .and { Modifier.isAbstract(it.access) }
+        .and { it.constructors.any { it.arguments.size == 5 } }
+        .and { it.interfaces.any { it.className.contains("java.lang.Cloneable") } }
+
+}
