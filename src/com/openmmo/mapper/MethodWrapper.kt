@@ -1,5 +1,6 @@
 package com.openmmo.mapper
 
+import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.MethodNode
 
@@ -41,5 +42,9 @@ class MethodWrapper(val jar: JarWrapper, val klass: ClassWrapper, val node: Meth
 
     override fun toString(): String {
         return "$klass.$name$desc"
+    }
+
+    fun instructionsContainsString(searchTerm: String): Boolean {
+        return this.instructions.filter { it -> it.opcode == Opcodes.LDC && it.ldcCst.toString().contains(searchTerm) }.count() > 0
     }
 }
