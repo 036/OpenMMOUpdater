@@ -33,6 +33,10 @@ class ClassWrapper(val jar: JarWrapper, val node: ClassNode) {
 
     val id get() = type
 
+    fun hasAccess(mask: Int): Boolean {
+        return access and mask != 0;
+    }
+
     override fun toString(): String {
         return name
     }

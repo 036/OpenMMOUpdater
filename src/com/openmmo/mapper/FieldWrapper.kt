@@ -15,6 +15,10 @@ class FieldWrapper(val jar: JarWrapper, val klass: ClassWrapper, val node: Field
 
     val id = klass.type to name
 
+    fun hasAccess(mask: Int): Boolean {
+        return access and mask != 0;
+    }
+
     override fun toString(): String {
         return "$klass.$name"
     }

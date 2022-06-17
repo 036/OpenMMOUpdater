@@ -1,13 +1,6 @@
 package com.openmmo.analysers
 
-import com.openmmo.ASMExtensions.hasInterfaces
-import com.openmmo.ASMExtensions.isAbstract
-import com.openmmo.mapper.ClassWrapper
-import com.openmmo.mapper.IdentityMapper
-import com.openmmo.mapper.and
-import com.openmmo.mapper.predicateOf
-import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.ClassNode
+import com.openmmo.mapper.*
 import org.objectweb.asm.tree.LdcInsnNode
 import java.lang.reflect.Modifier
 
@@ -27,4 +20,9 @@ class PokemonClass : IdentityMapper.Class() {
 
             foundMessage
         }
+
+    @DependsOn(GameLoop::class)
+    class gameLoop() : IdentityMapper.StaticField() {
+        override val predicate = predicateOf<FieldWrapper> { it.type == type<GameLoop>() }
+    }
 }

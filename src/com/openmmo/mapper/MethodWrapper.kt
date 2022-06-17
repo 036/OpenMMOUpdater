@@ -40,11 +40,27 @@ class MethodWrapper(val jar: JarWrapper, val klass: ClassWrapper, val node: Meth
         return name == CONSTRUCTOR_NAME
     }
 
+    fun hasAccess(mask: Int): Boolean {
+        return access and mask != 0;
+    }
+
     override fun toString(): String {
         return "$klass.$name$desc"
     }
 
     fun instructionsContainsString(searchTerm: String): Boolean {
         return this.instructions.filter { it -> it.opcode == Opcodes.LDC && it.ldcCst.toString().contains(searchTerm) }.count() > 0
+    }
+
+    fun invokesMethod(opcode: Int, method: MethodWrapper): Boolean {
+        return this.instructions.filter { it -> it.opcode == opcode && it.methodName == method.name && it.methodOwner.internalName == method.klass.name }.count() > 0
+    }
+
+    fun invokesMethod(opcode: Int, name:String, owner: String): Boolean {
+        return this.instructions.filter { it -> it.opcode == opcode && it.methodName == name && it.methodOwner.internalName == owner }.count() > 0
+    }
+
+    fun accessesField(opcode: Int, field: FieldWrapper): Boolean {
+        return this.instructions.filter { it -> it.opcode == opcode && it.fieldName == field.name && it.fieldOwner.internalName == field.klass.name }.count() > 0
     }
 }
