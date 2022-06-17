@@ -5,11 +5,11 @@ import com.google.gson.reflect.TypeToken
 import com.openmmo.mapper.IdClass
 import org.objectweb.asm.commons.Remapper
 import java.nio.file.Files
-import java.nio.file.Paths
+import java.nio.file.Path
 
-object RenameFromHooks : Remapper() {
+class RenameFromHooks(hooks: Path) : Remapper() {
     //TODO: tidy this up so it's not called every run
-    val mappedClasses = Gson().fromJson<List<IdClass>>(Files.newBufferedReader(Paths.get("C:\\PokeMMO\\hooks.json")), object : TypeToken<List<IdClass?>?>() {}.getType())
+    val mappedClasses = Gson().fromJson<List<IdClass>>(Files.newBufferedReader(hooks), object : TypeToken<List<IdClass?>?>() {}.getType())
 
 
     override fun map(internalName: String): String {

@@ -1,32 +1,36 @@
-package com.openmmo;
+package com.openmmo
 
 import com.google.gson.GsonBuilder
 import com.openmmo.analysers.*
-import com.openmmo.deobfuscator.Common.writeClasses
 import com.openmmo.deobfuscator.Deobuscator
 import com.openmmo.mapper.*
-import org.objectweb.asm.ClassReader
-import org.objectweb.asm.ClassWriter
+import com.openmmo.unpacker.Unpacker
 import org.objectweb.asm.Type
 import java.io.FileWriter
 import java.nio.file.Paths
-import java.util.jar.JarFile
 
-class Updater {
-    private val pathToJar = Paths.get("C:\\Projects\\Reversing\\JVMReversing\\PokeMMO\\09062022 Update\\PokeMMO_new.jar")
-    private val hooksJson = "C:\\PokeMMO\\Hooks.json"
+class Updater(var settings: UpdaterSettings) {
 
     companion object {
         const val DEBUG = false
     }
 
     fun run() {
-//        getHooks()
-//        deobfuscate()
-        Deobuscator().run(pathToJar, Paths.get("C:\\PokeMMO\\deob.jar"))
+        if(settings.runUnpacker) {
+            println("Running unpacker")
+            Unpacker().run(Paths.get(settings.PokeMMO_Exe), Paths.get(settings.PokeMMO_Jar))
+        }
+        if(settings.runMatcher) {
+            println("Running matcher")
+            getHooks(settings)
+        }
+        if(settings.runDeobuscator) {
+            println("Running deobfuscator")
+            Deobuscator().run(Paths.get(settings.PokeMMO_Jar), Paths.get(settings.PokeMMO_Deob_Jar), Paths.get(settings.Hooks_Json))
+        }
     }
 
-    private fun getHooks() : List<IdClass> {
+    private fun getHooks(settings: UpdaterSettings) : List<IdClass> {
         val context = Mapper.Context()
         val pokeMMOClassAnalyser = PokeMMOClass::class.java
 
@@ -34,13 +38,13 @@ class Updater {
         val mappers = jarMapper.getOrderedMappers()
 
         //Performs analysis against the JAR using the mappings
-        jarMapper.startAnalysing(mappers, pathToJar, context)
+        jarMapper.startAnalysing(mappers, Paths.get(settings.PokeMMO_Jar), context)
 
         val idClasses = context.buildIdHierarchy()
 
         if (!DEBUG) {
             println("Writing hooks to json")
-            FileWriter(hooksJson).use { writer ->
+            FileWriter(settings.Hooks_Json).use { writer ->
                 val gson = GsonBuilder().setPrettyPrinting().create()
                 gson.toJson(idClasses, writer)
             }
@@ -50,8 +54,6 @@ class Updater {
 
         return idClasses
     }
-
-
 
     private fun printResults(identifiedClasses: List<IdClass>) {
         identifiedClasses.forEach {
@@ -111,6 +113,16 @@ class Updater {
 }
 
 fun main() {
+    val settings = UpdaterSettings()
+    settings.PokeMMO_Exe = "C:\\Program Files\\PokeMMO\\PokeMMO.exe"
+    settings.PokeMMO_Jar = "C:\\Program Files\\PokeMMO\\deobfuscation\\PokeMMO_new.jar"
+    settings.Hooks_Json = "C:\\Program Files\\PokeMMO\\deobfuscation\\Hooks.json"
+    settings.PokeMMO_Deob_Jar = "C:\\Program Files\\PokeMMO\\deobfuscation\\deob.jar"
+
+    settings.runUnpacker = true
+    settings.runMatcher = true
+    settings.runDeobuscator = true
+
     println("Starting updater")
-    Updater().run()
+    Updater(settings).run()
 }
