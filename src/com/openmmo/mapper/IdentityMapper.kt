@@ -31,6 +31,23 @@ abstract class IdentityMapper<T> : Mapper<T>() {
         }
     }
 
+    abstract class Enum(vararg searchStrings: String) : IdentityMapper<ClassWrapper>(), ElementMatcher.Class {
+        override fun options(jar: JarWrapper): Sequence<ClassWrapper> {
+            return jar.classes.asSequence()
+        }
+
+        override val predicate = predicateOf<ClassWrapper> { it.superType.className.contains("Enum") }
+            .and {
+                val amountOfStrings = searchStrings.size
+                var matchedCount = 0
+                searchStrings.forEach { searchString ->
+                    if (it.methods.any { it.instructionsContainsString(searchString) }) matchedCount++
+                }
+
+                matchedCount == amountOfStrings
+            }
+    }
+
     abstract class Field : IdentityMapper<FieldWrapper>(), ElementMatcher.Field {
         override fun options(jar: JarWrapper): Sequence<FieldWrapper> {
             return jar.classes.asSequence().flatMap { it.fields.asSequence() }

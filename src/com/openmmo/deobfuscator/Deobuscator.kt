@@ -1,6 +1,6 @@
 package com.openmmo.deobfuscator
 
-import com.openmmo.deobfuscator.Common.Transformers.Rename
+import com.openmmo.deobfuscator.Common.Transformers.RenameFromHooks
 import com.openmmo.deobfuscator.Common.Transformer
 import com.openmmo.deobfuscator.Common.readClasses
 import com.openmmo.deobfuscator.Common.writeClasses
@@ -10,7 +10,7 @@ class Deobuscator {
     fun run(input: Path, output: Path) {
 
         val transformer = Transformer.Composite(
-            Transformer.Remap(Rename)
+            Transformer.Remap(RenameFromHooks),
         )
 
         writeClasses(transformer.transform(readClasses(input)), output)

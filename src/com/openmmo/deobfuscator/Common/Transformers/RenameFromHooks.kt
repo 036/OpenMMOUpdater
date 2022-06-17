@@ -7,7 +7,7 @@ import org.objectweb.asm.commons.Remapper
 import java.nio.file.Files
 import java.nio.file.Paths
 
-object Rename : Remapper() {
+object RenameFromHooks : Remapper() {
     //TODO: tidy this up so it's not called every run
     val mappedClasses = Gson().fromJson<List<IdClass>>(Files.newBufferedReader(Paths.get("C:\\PokeMMO\\hooks.json")), object : TypeToken<List<IdClass?>?>() {}.getType())
 
