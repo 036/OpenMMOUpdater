@@ -14,4 +14,24 @@ class FooterPosition : IdentityMapper.Class() {
         .and { it.constructors.first().arguments.size == 2}
         .and { it.constructors.first().arguments.startsWith(Type.SHORT_TYPE)}
         .and { it.constructors.first().arguments.endsWith(Type.SHORT_TYPE)}
+
+    class getX : IdentityMapper.InstanceMethod() {
+        override val predicate = predicateOf<MethodWrapper> { it.arguments.isEmpty() }
+            .and { it.returnType == Type.SHORT_TYPE }
+            .and { it.klass.methods.filter { m -> m.returnType == Type.SHORT_TYPE && m.arguments.isEmpty() }[0] == it }
+    }
+
+    class getY : IdentityMapper.InstanceMethod() {
+        override val predicate = predicateOf<MethodWrapper> { it.arguments.isEmpty() }
+            .and { it.returnType == Type.SHORT_TYPE }
+            .and { it.klass.methods.filter { m -> m.returnType == Type.SHORT_TYPE && m.arguments.isEmpty() }[1] == it }
+    }
+
+    class getZ : IdentityMapper.InstanceMethod() {
+        override val predicate = predicateOf<MethodWrapper> { it.arguments.isEmpty() }
+            .and { it.returnType == Type.SHORT_TYPE }
+            .and { it.klass.methods.filter { m -> m.returnType == Type.SHORT_TYPE && m.arguments.isEmpty() }[2] == it }
+    }
+
+
 }

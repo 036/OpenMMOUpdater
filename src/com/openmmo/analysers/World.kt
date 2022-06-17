@@ -15,4 +15,9 @@ class World : IdentityMapper.Class() {
         override val predicate = predicateOf<MethodWrapper> { it.arguments.size == 3 }
             .and { it.arguments.startsWith(Type.BYTE_TYPE, Type.BYTE_TYPE, Type.BYTE_TYPE) }
     }
+
+    @DependsOn(MapManager::class)
+    class mapManager() : IdentityMapper.InstanceField() {
+        override val predicate = predicateOf<FieldWrapper> { it.type == type<MapManager>()}
+    }
 }

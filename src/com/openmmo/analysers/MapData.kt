@@ -18,4 +18,19 @@ class MapData : IdentityMapper.Class() {
             .and { it.arguments.endsWith(Type.INT_TYPE) }
             .and { it.arguments.size == 3 }
     }
+
+    @DependsOn(MapData::class)
+    class GetCityName : IdentityMapper.Method() {
+        override val predicate = predicateOf<MethodWrapper> { it.returnType == Type.getType(String::class.java) }
+            .and { it.arguments.isEmpty() }
+            .and { it.klass.type == type<MapData>() }
+    }
+
+    class mapID() : IdentityMapper.InstanceField() {
+        override val predicate = predicateOf<FieldWrapper> { it.klass.instanceFields.filter { f -> f.type == Type.BYTE_TYPE }[0] == it }
+    }
+
+    class channel() : IdentityMapper.InstanceField() {
+        override val predicate = predicateOf<FieldWrapper> { it.klass.instanceFields.filter { f -> f.type == Type.BYTE_TYPE }[3] == it }
+    }
 }

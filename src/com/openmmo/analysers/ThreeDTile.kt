@@ -11,4 +11,11 @@ class ThreeDTile : IdentityMapper.Class() {
         .and { it.constructors.any { it.arguments.size == 5 } }
         .and { it.interfaces.any { it.className.contains("java.lang.Cloneable") } }
 
+    class movementPerms() : IdentityMapper.InstanceField() {
+        override val predicate = predicateOf<FieldWrapper> { it.type == Type.SHORT_TYPE }
+    }
+
+    class type() : IdentityMapper.InstanceField() {
+        override val predicate = predicateOf<FieldWrapper> { it.type == Type.BYTE_TYPE }
+    }
 }

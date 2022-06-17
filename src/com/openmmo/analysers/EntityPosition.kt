@@ -15,6 +15,26 @@ class EntityPosition : IdentityMapper.Class() {
         override val predicate = predicateOf<FieldWrapper> { it.type == type<FooterPosition>() }
     }
 
+    class direction : IdentityMapper.InstanceField() {
+        override val predicate = predicateOf<FieldWrapper> { it.type == Type.BYTE_TYPE  }
+            .and { it.klass.instanceFields[7] == it }
+    }
+
+    class regionID : IdentityMapper.InstanceField() {
+        override val predicate = predicateOf<FieldWrapper> { it.type == Type.BYTE_TYPE  }
+            .and { it.klass.instanceFields[0] == it }
+    }
+
+    class zoneID : IdentityMapper.InstanceField() {
+        override val predicate = predicateOf<FieldWrapper> { it.type == Type.BYTE_TYPE  }
+            .and { it.klass.instanceFields[1] == it }
+    }
+
+    class mapID : IdentityMapper.InstanceField() {
+        override val predicate = predicateOf<FieldWrapper> { it.type == Type.BYTE_TYPE  }
+            .and { it.klass.instanceFields[2] == it }
+    }
+
     class setPosition: IdentityMapper.InstanceMethod() {
         override val predicate = predicateOf<MethodWrapper> { it.arguments.size == 5 }
             .and { it.arguments.startsWith(Type.BOOLEAN_TYPE) }
