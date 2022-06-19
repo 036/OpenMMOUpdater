@@ -23,7 +23,8 @@ class ClassNode(val originalName: String, val newName: String) {
 
     // TODO: add better way
     fun isNameObfuscated(name: String): Boolean {
-        return name != "<init>" && name != "<clinit>" && name != "valueOf" && name != "values" && name != "toString" && name != "equals" && name != "hashCode";
+        return name != "<init>" && name != "<clinit>" && name != "valueOf" && name != "values" && name != "toString"
+                && name != "equals" && name != "hashCode" && name != "clone";
     }
 
     fun addMethod(originalName: String, desc: String): String {
