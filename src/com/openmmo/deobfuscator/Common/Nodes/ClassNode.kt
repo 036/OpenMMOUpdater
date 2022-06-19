@@ -25,6 +25,10 @@ class ClassNode(val originalName: String, val newName: String) {
         if(isMethodMapped(originalName, desc))
             return methodMap[originalName + desc]!!.newName
 
+        if(originalName == "<init>" || originalName == "<clinit>") {
+            methodMap[originalName + desc] = MethodNode(originalName, originalName, desc)
+        }
+
         val newName = "method_$fieldCounter"
 
         methodMap[originalName + desc] = MethodNode(originalName, newName, desc)
