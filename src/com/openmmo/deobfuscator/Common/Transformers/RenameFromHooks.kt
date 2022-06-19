@@ -8,7 +8,7 @@ import org.objectweb.asm.commons.Remapper
 import java.nio.file.Files
 import java.nio.file.Path
 
-class RenameFromHooks(hooks: Path) : Remapper() {
+class RenameFromHooks(hooks: Path, val normalize: Boolean) : Remapper() {
     //TODO: tidy this up so it's not called every run
     val mappedClasses = Gson().fromJson<List<IdClass>>(Files.newBufferedReader(hooks), object : TypeToken<List<IdClass?>?>() {}.getType())
     val classManager = ClassNodeManager()
@@ -18,7 +18,7 @@ class RenameFromHooks(hooks: Path) : Remapper() {
         if (foundClass.any()) {
             return "f/" + foundClass.first().`class`
         }
-        if(internalName.startsWith("f/"))  {
+        if(internalName.startsWith("f/") && normalize)  {
             return classManager.addClass(internalName)
         }
 
@@ -30,7 +30,7 @@ class RenameFromHooks(hooks: Path) : Remapper() {
         if (foundMethod.any()) {
             return foundMethod.first().method
         }
-        if(owner.startsWith("f/"))  {
+        if(owner.startsWith("f/") && normalize)  {
             return classManager.getClass(owner).addMethod(name, descriptor)
         }
 
@@ -42,7 +42,7 @@ class RenameFromHooks(hooks: Path) : Remapper() {
         if (foundField.any()) {
             return foundField.first().field
         }
-        if(owner.startsWith("f/"))  {
+        if(owner.startsWith("f/") && normalize)  {
             return classManager.getClass(owner).addField(name)
         }
 

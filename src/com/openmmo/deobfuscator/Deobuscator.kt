@@ -7,10 +7,10 @@ import com.openmmo.deobfuscator.Common.writeClasses
 import java.nio.file.Path
 
 class Deobuscator {
-    fun run(input: Path, output: Path, hooks: Path) {
+    fun run(input: Path, output: Path, hooks: Path, normalize: Boolean) {
 
         val transformer = Transformer.Composite(
-            Transformer.Remap(RenameFromHooks(hooks)),
+            Transformer.Remap(RenameFromHooks(hooks, normalize)),
         )
 
         writeClasses(transformer.transform(readClasses(input)), output)
