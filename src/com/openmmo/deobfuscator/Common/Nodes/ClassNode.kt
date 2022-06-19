@@ -21,12 +21,18 @@ class ClassNode(val originalName: String, val newName: String) {
         return newName
     }
 
+    // TODO: add better way
+    fun isNameObfuscated(name: String): Boolean {
+        return name != "<init>" && name != "<clinit>" && name != "valueOf" && name != "values" && name != "toString" && name != "equals" && name != "hashCode";
+    }
+
     fun addMethod(originalName: String, desc: String): String {
         if(isMethodMapped(originalName, desc))
             return methodMap[originalName + desc]!!.newName
 
-        if(originalName == "<init>" || originalName == "<clinit>") {
+        if(!isNameObfuscated(originalName)) {
             methodMap[originalName + desc] = MethodNode(originalName, originalName, desc)
+            return originalName
         }
 
         val newName = "method_$fieldCounter"
