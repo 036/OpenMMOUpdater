@@ -23,7 +23,7 @@ class GameClass : IdentityMapper.Class() {
             .and { it.returnType == type<ItemInventory>()}
     }
 
-    @DependsOn(ItemInventory::class)
+    @DependsOn(ItemInventory::class, currentInventory::class)
     class GetCurrentInventory() : IdentityMapper.InstanceMethod() {
         override val predicate = predicateOf<MethodWrapper> { it.arguments.isEmpty() }
             .and { it.returnType == type<ItemInventory>()}
@@ -63,6 +63,13 @@ class GameClass : IdentityMapper.Class() {
     @DependsOn(GameServer::class)
     class gameServer() : IdentityMapper.InstanceField() {
         override val predicate = predicateOf<FieldWrapper> { it.type == type<GameServer>() }
+    }
+
+    @DependsOn(Account::class, account::class)
+    class GetAccount() : IdentityMapper.InstanceMethod() {
+        override val predicate = predicateOf<MethodWrapper> { it.returnType == type<Account>() }
+            .and { it.arguments.isEmpty() }
+            .and { it.accessesField(Opcodes.GETFIELD, field<account>())}
     }
 
     @DependsOn(PokemonInventory::class)
@@ -118,6 +125,7 @@ class GameClass : IdentityMapper.Class() {
             .and { it.arguments.any { it == type<ChatTypeEnum>() } }
     }
 
+    @DependsOn(PokemonClass.gameLoop::class)
     class IsMovementBlocked() : IdentityMapper.InstanceMethod() {
         override val predicate = predicateOf<MethodWrapper> { it.returnType == Type.BOOLEAN_TYPE }
             .and { it.arguments.isEmpty() }
