@@ -55,7 +55,7 @@ class TranslationTransformer(hooks: Path) : Transformer.Single() {
                                     }
                                 }
                             } catch (e: Exception) {
-                                println("Could not replace call to ")
+                                println("There was an error with transforming translations to ${intCode}")
                             }
                         }
                     }

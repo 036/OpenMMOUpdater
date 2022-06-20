@@ -12,7 +12,7 @@ import java.nio.file.Paths
 class Updater(var settings: UpdaterSettings) {
 
     companion object {
-        const val DEBUG = false
+        const val DEBUG = true
     }
 
     fun run() {
