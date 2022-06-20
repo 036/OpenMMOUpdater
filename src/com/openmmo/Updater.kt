@@ -42,12 +42,10 @@ class Updater(var settings: UpdaterSettings) {
 
         val idClasses = context.buildIdHierarchy()
 
-        if (!DEBUG) {
-            println("Writing hooks to json")
-            FileWriter(settings.Hooks_Json).use { writer ->
-                val gson = GsonBuilder().setPrettyPrinting().create()
-                gson.toJson(idClasses, writer)
-            }
+        println("Writing hooks to json")
+        FileWriter(settings.Hooks_Json).use { writer ->
+            val gson = GsonBuilder().setPrettyPrinting().create()
+            gson.toJson(idClasses, writer)
         }
 
         printResults(idClasses)

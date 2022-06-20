@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.openmmo.Updater
 import com.openmmo.deobfuscator.Common.Models.StringData
 import com.openmmo.deobfuscator.Common.Transformer
 import com.openmmo.mapper.IdClass
@@ -46,14 +47,15 @@ class TranslationTransformer(hooks: Path) : Transformer.Single() {
                                     val result = mappedXmlStrings.translationStrings?.first { it.id == intCode }
                                     // TODO: add a way to read IntValue from SIPUSH
                                     if (result != null) {
-                                        println("Replace TranslationHelper.GetStringByID(I) call in ${klass.name}")
+                                        if (Updater.DEBUG)
+                                            println("Replace TranslationHelper.GetStringByID(I) call in ${klass.name} TranslationHelper.${getStringByID.method}(${intCode}) to ${result.value}")
                                         method.instructions.insertBefore(inst, InsnNode(Opcodes.POP))
                                         method.instructions.insertBefore(inst, LdcInsnNode(result.value))
                                         method.instructions.remove(inst)
                                     }
                                 }
                             } catch (e: Exception) {
-
+                                println("Could not replace call to ")
                             }
                         }
                     }
