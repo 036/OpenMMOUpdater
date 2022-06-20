@@ -12,6 +12,7 @@ import java.nio.file.Path
 class TranslationTransformer(hooks: Path) : Transformer.Single() {
     val mappedClasses = Gson().fromJson<List<IdClass>>(Files.newBufferedReader(hooks), object : TypeToken<List<IdClass?>?>() {}.getType())
     val translationHelper = mappedClasses.filter { it.`class` == "TranslationHelper"}.first()
+    val getStringByID = mappedClasses.first { it.`class` == "TranslationHelper" }.methods.first { it.method == "GetStringByID" }
 
     override fun transform(klass: ClassNode) {
         findTranslationHelperCall(klass)
@@ -21,11 +22,12 @@ class TranslationTransformer(hooks: Path) : Transformer.Single() {
         klass.methods.forEach { method ->
             method.instructions.forEach { inst ->
                 if (inst.opcode == Opcodes.INVOKESTATIC) {
-                    if (inst is MethodInsnNode && inst.owner.contains(translationHelper.name)) {
+                    if (inst is MethodInsnNode && inst.owner.contains(translationHelper.name) && inst.name.contains(getStringByID.name)) {
                         val previousInstruction = inst.previous
                         if (previousInstruction is IntInsnNode) {
                             val intCode = previousInstruction.operand
-                            println("Doing at ${klass.name}")
+                            // TODO: add a way to read IntValue from SIPUSH
+                            println("Replace TranslationHelper.GetStringByID(I) call in ${klass.name}")
                             method.instructions.insertBefore(inst, InsnNode(Opcodes.POP))
                             method.instructions.insertBefore(inst, LdcInsnNode("blah"))
                             method.instructions.remove(inst)
