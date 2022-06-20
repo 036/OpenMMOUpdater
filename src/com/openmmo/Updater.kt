@@ -1,7 +1,7 @@
 package com.openmmo
 
 import com.google.gson.GsonBuilder
-import com.openmmo.analysers.*
+import com.openmmo.analysers.PokeMMOClass
 import com.openmmo.deobfuscator.Deobuscator
 import com.openmmo.mapper.*
 import com.openmmo.unpacker.Unpacker
