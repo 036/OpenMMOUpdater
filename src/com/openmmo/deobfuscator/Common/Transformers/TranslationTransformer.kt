@@ -41,21 +41,20 @@ class TranslationTransformer(hooks: Path) : Transformer.Single() {
                     if (inst is MethodInsnNode && inst.owner.contains(translationHelper.name) && inst.name.contains(getStringByID.name)) {
                         val previousInstruction = inst.previous
                         if (previousInstruction is IntInsnNode) {
-                            val intCode = previousInstruction.operand
+                            val intCodeParameter = previousInstruction.operand
                             try {
                                 if (mappedXmlStrings != null) {
-                                    val result = mappedXmlStrings.translationStrings?.first { it.id == intCode }
-                                    // TODO: add a way to read IntValue from SIPUSH
+                                    val result = mappedXmlStrings.translationStrings?.first { it.id == intCodeParameter }
                                     if (result != null) {
                                         if (Updater.DEBUG)
-                                            println("Replace TranslationHelper.GetStringByID(I) call in ${klass.name} TranslationHelper.${getStringByID.method}(${intCode}) to ${result.value}")
+                                            println("Replace TranslationHelper.GetStringByID(I) call in ${klass.name} TranslationHelper.${getStringByID.method}(${intCodeParameter}) to ${result.value}")
                                         method.instructions.insertBefore(inst, InsnNode(Opcodes.POP))
                                         method.instructions.insertBefore(inst, LdcInsnNode(result.value))
                                         method.instructions.remove(inst)
                                     }
                                 }
                             } catch (e: Exception) {
-                                println("There was an error with transforming translations to ${intCode}")
+                                println("There was an error with transforming translations to $intCodeParameter")
                             }
                         }
                     }
