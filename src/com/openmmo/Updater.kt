@@ -1,7 +1,7 @@
 package com.openmmo
 
 import com.google.gson.GsonBuilder
-import com.openmmo.analysers.*
+import com.openmmo.analysers.PokeMMOClass
 import com.openmmo.deobfuscator.Deobuscator
 import com.openmmo.mapper.*
 import com.openmmo.unpacker.Unpacker
@@ -12,7 +12,7 @@ import java.nio.file.Paths
 class Updater(var settings: UpdaterSettings) {
 
     companion object {
-        const val DEBUG = false
+        const val DEBUG = true
     }
 
     fun run() {
@@ -42,12 +42,10 @@ class Updater(var settings: UpdaterSettings) {
 
         val idClasses = context.buildIdHierarchy()
 
-        if (!DEBUG) {
-            println("Writing hooks to json")
-            FileWriter(settings.Hooks_Json).use { writer ->
-                val gson = GsonBuilder().setPrettyPrinting().create()
-                gson.toJson(idClasses, writer)
-            }
+        println("Writing hooks to json")
+        FileWriter(settings.Hooks_Json).use { writer ->
+            val gson = GsonBuilder().setPrettyPrinting().create()
+            gson.toJson(idClasses, writer)
         }
 
         printResults(idClasses)
