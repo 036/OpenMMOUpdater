@@ -26,7 +26,7 @@ class Updater(var settings: UpdaterSettings) {
         }
         if(settings.runDeobuscator) {
             println("Running deobfuscator")
-            Deobuscator().run(Paths.get(settings.PokeMMO_Jar), Paths.get(settings.PokeMMO_Deob_Jar), Paths.get(settings.Hooks_Json))
+            Deobuscator().run(Paths.get(settings.PokeMMO_Jar), Paths.get(settings.PokeMMO_Deob_Jar), Paths.get(settings.Hooks_Json), settings.normalize)
         }
     }
 
@@ -119,9 +119,10 @@ fun main() {
     settings.Hooks_Json = "C:\\Program Files\\PokeMMO\\deobfuscation\\Hooks.json"
     settings.PokeMMO_Deob_Jar = "C:\\Program Files\\PokeMMO\\deobfuscation\\deob.jar"
 
-    settings.runUnpacker = true
+    settings.runUnpacker = false
     settings.runMatcher = true
     settings.runDeobuscator = true
+    settings.normalize = false
 
     println("Starting updater")
     Updater(settings).run()

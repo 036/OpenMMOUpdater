@@ -8,5 +8,5 @@ class UpdaterSettings {
     var runUnpacker: Boolean = true
     var runMatcher: Boolean = true
     var runDeobuscator: Boolean = true
-    var normalize: Boolean = true;
+    var normalize: Boolean = true
 }

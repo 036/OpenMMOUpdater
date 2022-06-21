@@ -1,5 +1,6 @@
 package com.openmmo.mapper
 
+import org.objectweb.asm.Opcodes
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 
