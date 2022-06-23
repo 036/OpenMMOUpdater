@@ -23,33 +23,37 @@ class ClassNode(val originalName: String, val newName: String) {
 
     // TODO: add better way
     fun isNameObfuscated(name: String): Boolean {
-        return name != "<init>" && name != "<clinit>" && name != "valueOf" && name != "values" && name != "toString"
-                && name != "equals" && name != "hashCode" && name != "clone";
+        //return name != "<init>" && name != "<clinit>" && name != "valueOf" && name != "values" && name != "toString"
+        //        && name != "equals" && name != "hashCode" && name != "clone" && name.length <= 4;
+        return name != "<init>" && name != "<clinit>" && name.length < 5
     }
 
     fun addMethod(originalName: String, desc: String): String {
-        if(isMethodMapped(originalName, desc))
+        if(isMethodMapped(originalName, desc)) {
+            if(this.originalName.contains("re0"))
+                println("Found Method ${this.originalName}.$originalName as ${this.newName}.${methodMap[originalName + desc]!!.newName}$desc")
             return methodMap[originalName + desc]!!.newName
+        }
 
         if(!isNameObfuscated(originalName)) {
             methodMap[originalName + desc] = MethodNode(originalName, originalName, desc)
             return originalName
         }
 
-        val newName = "method_$fieldCounter"
-
+        val newName = "method_$methodCounter"
+        if(this.originalName.contains("re0"))
+            println("Mapped Method ${this.originalName}.$originalName to ${this.newName}.$newName$desc")
         methodMap[originalName + desc] = MethodNode(originalName, newName, desc)
         methodCounter++
-
         return newName
     }
 
     fun isFieldMapped(originalName: String): Boolean {
-        return fieldMap.keys.any { originalName == it }
+        return fieldMap.containsKey(originalName)
     }
 
     fun isMethodMapped(originalName: String, desc: String): Boolean {
-        return methodMap.keys.any { originalName + desc == it }
+        return methodMap.containsKey(originalName + desc)
     }
 
 }
