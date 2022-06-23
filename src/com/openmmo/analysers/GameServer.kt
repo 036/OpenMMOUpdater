@@ -4,6 +4,8 @@ import com.openmmo.ASMExtensions.hasInterfaces
 import com.openmmo.ASMExtensions.isAbstract
 import com.openmmo.ASMExtensions.isConstructor
 import com.openmmo.mapper.*
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.Type
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.LdcInsnNode
 
@@ -19,5 +21,15 @@ class GameServer : IdentityMapper.Class() {
     @DependsOn(GameClass::class)
     class gameClass : IdentityMapper.InstanceField() {
         override val predicate = predicateOf<FieldWrapper> { it.type == type<GameClass>() }
+    }
+
+    @DependsOn(GameServer::class)
+    class sendPacket : IdentityMapper.InstanceMethod() {
+        override val predicate = predicateOf<MethodWrapper> { it.klass.type == type<GameServer>() }
+            .and { it.returnType == Type.VOID_TYPE }
+            .and { it.arguments.size == 1 }
+            .and { it.invokesMethod(Opcodes.INVOKEVIRTUAL, "addLast", "java/util/ArrayDeque") }
+            .and { it.instructions.any { it.opcode == Opcodes.MONITOREXIT } }
+            .and { !it.hasAccess(Opcodes.ACC_SYNTHETIC) }
     }
 }

@@ -30,8 +30,6 @@ class ClassNode(val originalName: String, val newName: String) {
 
     fun addMethod(originalName: String, desc: String): String {
         if(isMethodMapped(originalName, desc)) {
-            if(this.originalName.contains("re0"))
-                println("Found Method ${this.originalName}.$originalName as ${this.newName}.${methodMap[originalName + desc]!!.newName}$desc")
             return methodMap[originalName + desc]!!.newName
         }
 
@@ -41,8 +39,6 @@ class ClassNode(val originalName: String, val newName: String) {
         }
 
         val newName = "method_$methodCounter"
-        if(this.originalName.contains("re0"))
-            println("Mapped Method ${this.originalName}.$originalName to ${this.newName}.$newName$desc")
         methodMap[originalName + desc] = MethodNode(originalName, newName, desc)
         methodCounter++
         return newName
