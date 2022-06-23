@@ -32,4 +32,22 @@ class GameServer : IdentityMapper.Class() {
             .and { it.instructions.any { it.opcode == Opcodes.MONITOREXIT } }
             .and { !it.hasAccess(Opcodes.ACC_SYNTHETIC) }
     }
+
+    @DependsOn(GameServer::class)
+    class packetQueue : IdentityMapper.InstanceField() {
+        override val predicate = predicateOf<FieldWrapper> { it.klass.type == type<GameServer>() }
+            .and { it.type.className.contains("ArrayDeque") }
+    }
+
+    @DependsOn(GameServer::class)
+    class inflater : IdentityMapper.InstanceField() {
+        override val predicate = predicateOf<FieldWrapper> { it.klass.type == type<GameServer>() }
+            .and { it.type.className.contains("Inflater") }
+    }
+
+    @DependsOn(GameServer::class)
+    class scheduledFuture : IdentityMapper.InstanceField() {
+        override val predicate = predicateOf<FieldWrapper> { it.klass.type == type<GameServer>() }
+            .and { it.type.className.contains("ScheduledFuture") }
+    }
 }
