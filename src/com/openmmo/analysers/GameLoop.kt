@@ -46,4 +46,16 @@ class GameLoop : IdentityMapper.Class() {
         override val predicate = predicateOf<MethodWrapper> { it.returnType.className.contains("ThemeManager") }
             .and { it.arguments.size == 2 }
     }
+
+    class getWorldWidth : IdentityMapper.InstanceMethod() {
+        override val predicate = predicateOf<MethodWrapper> { it.returnType == Type.INT_TYPE }
+            .and { it.arguments.isEmpty() }
+            .and { it.invokesMethod(Opcodes.INVOKEVIRTUAL, "getWorldWidth", "com/badlogic/gdx/utils/viewport/Viewport") }
+    }
+
+    class getWorldHeight : IdentityMapper.InstanceMethod() {
+        override val predicate = predicateOf<MethodWrapper> { it.returnType == Type.INT_TYPE }
+            .and { it.arguments.isEmpty() }
+            .and { it.invokesMethod(Opcodes.INVOKEVIRTUAL, "getWorldHeight", "com/badlogic/gdx/utils/viewport/Viewport") }
+    }
 }

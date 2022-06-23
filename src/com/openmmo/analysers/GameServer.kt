@@ -50,4 +50,11 @@ class GameServer : IdentityMapper.Class() {
         override val predicate = predicateOf<FieldWrapper> { it.klass.type == type<GameServer>() }
             .and { it.type.className.contains("ScheduledFuture") }
     }
+
+    @DependsOn(GameServer::class)
+    class handleGameServerMessage : IdentityMapper.InstanceMethod() {
+        override val predicate = predicateOf<MethodWrapper> { it.returnType == Type.BOOLEAN_TYPE }
+            .and { it.arguments.size == 1 }
+            .and { it.instructionsContainsString("error handling gs message ") }
+    }
 }
