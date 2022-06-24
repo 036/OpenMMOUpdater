@@ -4,8 +4,7 @@ import com.openmmo.mapper.*
 import org.objectweb.asm.Opcodes
 
 class LoginWindow : IdentityMapper.Class() {
-    override val predicate = predicateOf<ClassWrapper> { it.superType.className.contains("Widget") }
-        .and { it.constructors.any { it.instructions.filter { it.opcode == Opcodes.LDC }.any { it.ldcCst == "logingui" } } }
+    override val predicate = predicateOf<ClassWrapper> { it.constructors.any { it.instructions.filter { it.opcode == Opcodes.LDC }.any { it.ldcCst == "logingui" } } }
         .and { it.constructors.any { it.instructions.filter { it.opcode == Opcodes.LDC }.any { it.ldcCst == "This platform is now unsupported and the game may break at any time in the future." } } }
 
     @DependsOn(LoginWindow::class)

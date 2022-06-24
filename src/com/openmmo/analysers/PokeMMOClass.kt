@@ -11,7 +11,7 @@ class PokeMMOClass : IdentityMapper.Class() {
         .and { it.methods.count() > 7 }
         .and { it.instanceFields.isEmpty() }
         .and { it.staticFields.count() > 24 }
-        .and { it.fields.any { field -> field.desc.contains("Multiplexer") } }
+//        .and { it.fields.any { field -> field.desc.contains("Multiplexer") } }
 
     @DependsOn(World::class)
     class world : StaticField() {

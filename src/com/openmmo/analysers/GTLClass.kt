@@ -9,6 +9,4 @@ class GTLClass : IdentityMapper.Class() {
         .and { it.instanceFields.any { field -> field.desc.contains("DialogLayout") }}
         .and { it.instanceFields.any { field -> field.desc.contains("EditField") }}
         .and { it.instanceFields.any { field -> field.desc.contains("Timer") }}
-
-
 }

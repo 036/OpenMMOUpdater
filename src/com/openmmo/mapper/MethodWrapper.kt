@@ -49,7 +49,11 @@ class MethodWrapper(val jar: JarWrapper, val klass: ClassWrapper, val node: Meth
     }
 
     fun instructionsContainsString(searchTerm: String): Boolean {
-        return this.instructions.filter { it -> it.opcode == Opcodes.LDC && it.ldcCst.toString().contains(searchTerm) }.count() > 0
+        return this.instructions.filter { it -> it.opcode == Opcodes.LDC && it.ldcCst.toString().contains(searchTerm) }.any()
+    }
+
+    fun instructionsMatchesString(searchTerm: String):  Boolean {
+        return this.instructions.filter { it -> it.opcode == Opcodes.LDC && it.ldcCst.toString() == searchTerm }.any()
     }
 
     fun invokesMethod(opcode: Int, method: MethodWrapper): Boolean {
