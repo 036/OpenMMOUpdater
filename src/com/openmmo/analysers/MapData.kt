@@ -5,12 +5,14 @@ import com.openmmo.ASMExtensions.isConstructor
 import com.openmmo.mapper.*
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.ClassNode
+import java.lang.reflect.Modifier
 
 class MapData : IdentityMapper.Class() {
     override val predicate = predicateOf<ClassWrapper> {it.constructors.size == 1}
         .and { it.constructors.first().arguments.size == 4 }
-        .and{ it.constructors.first().arguments.startsWith(Type.BYTE_TYPE) }
-        .and { it.interfaces.any {iface -> iface.className.contains("Disposable")} }
+        .and{ it.constructors.first().arguments.startsWith(Type.BYTE_TYPE,Type.BYTE_TYPE,Type.BYTE_TYPE,Type.BYTE_TYPE) }
+        .and { Modifier.isAbstract(it.access) }
+        .and { it.methods.any { it.instructionsMatchesString("Invalid direction") } }
 
     @DependsOn(FooterPosition::class)
     class GetFooterFieldInDirection : IdentityMapper.Method() {

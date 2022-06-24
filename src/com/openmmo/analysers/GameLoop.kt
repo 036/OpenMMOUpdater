@@ -4,9 +4,14 @@ import com.openmmo.mapper.*
 import org.objectweb.asm.*
 import org.objectweb.asm.tree.LdcInsnNode
 import java.lang.Exception
+import java.lang.reflect.Modifier
 
+@DependsOn(WindowManager::class)
 class GameLoop : IdentityMapper.Class() {
-    override val predicate = predicateOf<ClassWrapper> { it.superType.className.equals("com.badlogic.gdx.ApplicationAdapter")}
+    override val predicate = predicateOf<ClassWrapper> { it.instanceFields.any { it.type == type<WindowManager>() }}
+        .and { it.fields.any { it.type.descriptor.contains("HashMap") } }
+        .and { Modifier.isAbstract(it.access) }
+        .and { it.instanceFields.size > 20 }
 
     @DependsOn(GameLoop::class)
     class pause : IdentityMapper.Method() {

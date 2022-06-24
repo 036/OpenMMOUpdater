@@ -18,6 +18,11 @@ class PokeMMOClass : IdentityMapper.Class() {
         override val predicate = predicateOf<FieldWrapper> { it.type == type<World>() }
     }
 
+    @DependsOn(PokeMMOClass::class, InputMultiplexer::class)
+    class inputMultiplexer : IdentityMapper.StaticField() {
+        override val predicate = predicateOf<FieldWrapper> { it.type == type<InputMultiplexer>() }
+    }
+
     @DependsOn(BattleClass::class)
     class battle : IdentityMapper.StaticField() {
         override val predicate = predicateOf<FieldWrapper> { it.type == type<BattleClass>() }
@@ -27,24 +32,6 @@ class PokeMMOClass : IdentityMapper.Class() {
     class hardware : IdentityMapper.StaticField() {
         override val predicate = predicateOf<FieldWrapper> { it.klass.type == type<PokeMMOClass>() }
             .and { it.type == type<Hardware>() }
-    }
-
-    class isAndroid: IdentityMapper.StaticMethod() {
-        override val predicate = predicateOf<MethodWrapper> { it.klass.type == type<PokeMMOClass>() }
-            .and { it.returnType == Type.BOOLEAN_TYPE }
-            .and { it.instructions.filter { it.opcode == Opcodes.GETSTATIC }.any { it.fieldName == "Android" } }
-    }
-
-    class isDesktop: IdentityMapper.StaticMethod() {
-        override val predicate = predicateOf<MethodWrapper> { it.klass.type == type<PokeMMOClass>() }
-            .and { it.returnType == Type.BOOLEAN_TYPE }
-            .and { it.instructions.filter { it.opcode == Opcodes.GETSTATIC }.any { it.fieldName == "Desktop" } }
-    }
-
-    class isIOS: IdentityMapper.StaticMethod() {
-        override val predicate = predicateOf<MethodWrapper> { it.klass.type == type<PokeMMOClass>() }
-            .and { it.returnType == Type.BOOLEAN_TYPE }
-            .and { it.instructions.filter { it.opcode == Opcodes.GETSTATIC }.any { it.fieldName == "iOS" } }
     }
 
     class openSupportUrl : IdentityMapper.StaticMethod() {
