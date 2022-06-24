@@ -6,10 +6,10 @@ import org.objectweb.asm.Type
 
 class CaptchaWindow : IdentityMapper.Class() {
     override val predicate = predicateOf<ClassWrapper> { it.interfaces.size == 1 }
-        .and { it.fields.any { it.type.className.contains("Texture") } }
         .and { it.constructors.any { it.arguments.endsWith(Type.BYTE_TYPE)} }
         .and { it.constructors.any { it.instructions.any { it.opcode == Opcodes.LDC && it.ldcCst == "confirm-widget" } } }
         .and { it.constructors.any { it.instructions.any { it.opcode == Opcodes.LDC && it.ldcCst == "countdown-progressbar" } } }
+        .and { it.instanceMethods.any { it.arguments.startsWith(Type.BOOLEAN_TYPE) } }
 
     @DependsOn(CaptchaWindow::class)
     class submitCaptcha : IdentityMapper.InstanceMethod() {

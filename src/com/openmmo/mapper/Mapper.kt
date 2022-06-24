@@ -3,7 +3,7 @@ package com.openmmo.mapper
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import org.objectweb.asm.Type
-import java.lang.Exception
+import kotlin.Exception
 import kotlin.reflect.KClass
 
 abstract class Mapper<T> : ElementMatcher<T> {
@@ -41,7 +41,12 @@ abstract class Mapper<T> : ElementMatcher<T> {
             is ElementMatcher.Class -> {
                 klass as KClass<out Mapper<ClassWrapper>>
                 t as ClassWrapper
-                check(!context.classes.inverse().containsKey(t))
+                try {
+                    check(!context.classes.inverse().containsKey(t))
+                } catch (exception: Exception) {
+                    println("Duplicate match found ${t.name}/${t.type} in analyser ${klass.simpleName}")
+                    throw exception
+                }
                 context.classes[klass] = t
             }
             is ElementMatcher.Field -> {
@@ -56,7 +61,10 @@ abstract class Mapper<T> : ElementMatcher<T> {
                 check(!context.methods.inverse().containsKey(t))
                 context.methods[klass] = t
             }
-            else -> error(this)
+            else -> {
+                println("Could not find key in context ${t}")
+                error(this)
+            }
         }
     }
 

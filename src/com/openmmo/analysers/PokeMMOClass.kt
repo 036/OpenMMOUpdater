@@ -18,10 +18,6 @@ class PokeMMOClass : IdentityMapper.Class() {
         override val predicate = predicateOf<FieldWrapper> { it.type == type<World>() }
     }
 
-    class inputMultiplexer : IdentityMapper.StaticField() {
-        override val predicate = predicateOf<FieldWrapper> { it.desc.contains("Multiplexer") }
-    }
-
     @DependsOn(BattleClass::class)
     class battle : IdentityMapper.StaticField() {
         override val predicate = predicateOf<FieldWrapper> { it.type == type<BattleClass>() }
