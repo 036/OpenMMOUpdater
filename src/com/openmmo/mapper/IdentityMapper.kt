@@ -1,6 +1,10 @@
 package com.openmmo.mapper
 
+import com.openmmo.analysers.AbstractPacket
 import org.objectweb.asm.Opcodes
+import org.objectweb.asm.Type
+import org.objectweb.asm.tree.AbstractInsnNode
+import org.objectweb.asm.tree.IntInsnNode
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 
@@ -46,6 +50,28 @@ abstract class IdentityMapper<T> : Mapper<T>() {
                 }
 
                 matchedCount == amountOfStrings
+            }
+    }
+
+    abstract class Packet(packetId: Int) : IdentityMapper<ClassWrapper>(), ElementMatcher.Class {
+        override fun options(jar: JarWrapper): Sequence<ClassWrapper> {
+            return jar.classes.asSequence()
+        }
+
+        override val predicate = predicateOf<ClassWrapper> { it.superType == type<AbstractPacket>() }
+            .and {
+                var matched = false
+                if (it.constructors.any()) {
+                    it.constructors.first().instructions.forEach { inst ->
+                        if (inst.opcode == Opcodes.BIPUSH) {
+                            inst.node as IntInsnNode
+                            if (inst.intOperand == packetId)
+                                matched = true
+                                matched
+                        }
+                    }
+                }
+                matched
             }
     }
 
