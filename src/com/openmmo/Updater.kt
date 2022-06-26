@@ -117,9 +117,9 @@ fun main() {
     settings.Hooks_Json = "C:\\Program Files\\PokeMMO\\deobfuscation\\Hooks.json"
     settings.PokeMMO_Deob_Jar = "C:\\Program Files\\PokeMMO\\deobfuscation\\deob.jar"
 
-    settings.runUnpacker = false
+    settings.runUnpacker = true
     settings.runMatcher = true
-    settings.runDeobuscator = true
+    settings.runDeobuscator = false
     settings.normalize = false
 
     println("Starting updater")
