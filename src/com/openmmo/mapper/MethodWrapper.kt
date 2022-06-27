@@ -67,4 +67,8 @@ class MethodWrapper(val jar: JarWrapper, val klass: ClassWrapper, val node: Meth
     fun accessesField(opcode: Int, field: FieldWrapper): Boolean {
         return this.instructions.filter { it -> it.opcode == opcode && it.fieldName == field.name && it.fieldOwner.internalName == field.klass.name }.count() > 0
     }
+
+    fun accessesField(opcode: Int, name:String, owner: String): Boolean {
+        return this.instructions.filter { it -> it.opcode == opcode && it.fieldName == name && it.fieldOwner.internalName == owner }.count() > 0
+    }
 }
