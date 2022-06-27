@@ -1,6 +1,5 @@
 package com.openmmo.analysers.security
 
-import com.openmmo.analysers.Roms.GBARom
 import com.openmmo.analysers.Utility.ILogger
 import com.openmmo.mapper.*
 import org.objectweb.asm.Opcodes
