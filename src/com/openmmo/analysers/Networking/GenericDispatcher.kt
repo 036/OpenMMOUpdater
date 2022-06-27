@@ -34,7 +34,7 @@ class GenericDispatcher : IdentityMapper.Class() {
         override val predicate = predicateOf<FieldWrapper> { it.klass.instanceFields.filter { it.type == Type.INT_TYPE }[0] == it }
     }
 
-    class disconnectTaksCooldown : IdentityMapper.InstanceField() {
+    class disconnectTaskCooldown : IdentityMapper.InstanceField() {
         override val predicate = predicateOf<FieldWrapper> { it.type == Type.LONG_TYPE }
     }
 
@@ -48,10 +48,10 @@ class GenericDispatcher : IdentityMapper.Class() {
             .and { it.hasAccess(Opcodes.ACC_ABSTRACT) }
     }
 
-    class addPacket : IdentityMapper.InstanceMethod() {
+    class addServer : IdentityMapper.InstanceMethod() {
         override val predicate = predicateOf<MethodWrapper> { it.returnType == Type.VOID_TYPE }
             .and { it.arguments.size == 1 }
-            .and { it.arguments[0].baseType == type<BaseDataPacket>() }
+            .and { it.arguments[0].baseType == type<BaseServer>() }
             .and { it.hasAccess(Opcodes.ACC_ABSTRACT) }
     }
 }

@@ -5,14 +5,14 @@ import com.openmmo.mapper.*
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
 
-class BaseDataPacket : IdentityMapper.Class() {
+class BaseServer : IdentityMapper.Class() {
     override val predicate = predicateOf<ClassWrapper> { it.methods.any { it.instructionsContainsString(",age=") } }
         .and { it.methods.any { it.instructionsContainsString(",closed=") } }
 
-    @DependsOn(ILogger::class, BaseDataPacket::class)
+    @DependsOn(ILogger::class, BaseServer::class)
     class logger : IdentityMapper.StaticField() {
         override val predicate = predicateOf<FieldWrapper> { it.type == type<ILogger>() }
-            .and { it.klass.type == type<BaseDataPacket>() }
+            .and { it.klass.type == type<BaseServer>() }
     }
 
     class socketChannel : IdentityMapper.InstanceField() {

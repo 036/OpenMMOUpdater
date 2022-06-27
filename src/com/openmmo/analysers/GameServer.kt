@@ -51,10 +51,10 @@ class GameServer : IdentityMapper.Class() {
             .and { it.type.className.contains("ScheduledFuture") }
     }
 
-    @DependsOn(GameServer::class)
-    class handleGameServerMessage : IdentityMapper.InstanceMethod() {
+    class FirstPacketToBytes : IdentityMapper.InstanceMethod() {
         override val predicate = predicateOf<MethodWrapper> { it.returnType == Type.BOOLEAN_TYPE }
             .and { it.arguments.size == 1 }
-            .and { it.instructionsContainsString("error handling gs message ") }
+            .and { it.arguments[0].className.contains("ByteBuffer") }
+            .and { it.invokesMethod(Opcodes.INVOKEVIRTUAL, "put", "java/nio/ByteBuffer") }
     }
 }

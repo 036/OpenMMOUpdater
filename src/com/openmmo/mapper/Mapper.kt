@@ -52,12 +52,18 @@ abstract class Mapper<T> : ElementMatcher<T> {
             is ElementMatcher.Field -> {
                 klass as KClass<out Mapper<FieldWrapper>>
                 t as FieldWrapper
+                if(context.fields.inverse().containsKey(t)) {
+                    println("Duplicate match found ${t.name}/${t.type} in analyser ${klass.simpleName}")
+                }
                 check(!context.fields.inverse().containsKey(t))
                 context.fields[klass] = t
             }
             is ElementMatcher.Method -> {
                 klass as KClass<out Mapper<MethodWrapper>>
                 t as MethodWrapper
+                if(context.methods.inverse().containsKey(t)) {
+                    println("Duplicate match found ${t.name}/${t.type} in analyser ${klass.simpleName}")
+                }
                 check(!context.methods.inverse().containsKey(t))
                 context.methods[klass] = t
             }

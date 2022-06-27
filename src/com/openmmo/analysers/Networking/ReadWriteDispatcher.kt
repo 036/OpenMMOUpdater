@@ -14,11 +14,11 @@ class ReadWriteDispatcher : IdentityMapper.Class() {
             .and { it.klass.type == type<ReadWriteDispatcher>() }
     }
 
-    @DependsOn(BaseDataPacket::class)
-    class addPacket : IdentityMapper.InstanceMethod() {
+    @DependsOn(BaseServer::class)
+    class addServer : IdentityMapper.InstanceMethod() {
         override val predicate = predicateOf<MethodWrapper> { it.returnType == Type.VOID_TYPE }
             .and { it.arguments.size == 1 }
-            .and { it.arguments[0].baseType == type<BaseDataPacket>() }
+            .and { it.arguments[0].baseType == type<BaseServer>() }
             .and { it.invokesMethod(Opcodes.INVOKEVIRTUAL, "add", "java/util/ArrayList") }
     }
 
@@ -28,7 +28,7 @@ class ReadWriteDispatcher : IdentityMapper.Class() {
             .and { it.instructionsContainsString("Unsupported readyOps ") }
     }
 
-    class queuedPackets : IdentityMapper.InstanceField() {
+    class queuedServers : IdentityMapper.InstanceField() {
         override val predicate = predicateOf<FieldWrapper> { it.type.className.contains("ArrayList") }
     }
 }
